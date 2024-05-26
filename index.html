@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APA 6 Reference Generator</title>
+    <script>
+        async function generateAPAReference() {
+            const url = document.getElementById('urlInput').value;
+            try {
+                const response = await fetch(url);
+                const text = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(text, 'text/html');
+
+                // Extract title
+                const title = doc.querySelector('title') ? doc.querySelector('title').innerText : 'No Title Found';
+
+                // Extract publication date (if available)
+                let pubDate = 'n.d.';
+                const metaDate = doc.querySelector('meta[name="date"], meta[property="article:published_time"]');
+                if (metaDate) {
+                    pubDate = metaDate.getAttribute('content');
+                } else if (doc.querySelector('time')) {
+                    pubDate = doc.querySelector('time').innerText;
+                }
+
+                if (pubDate !== 'n.d.') {
+                    try {
+                        const date = new Date(pubDate);
+                        pubDate = date.toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        });
+                    } catch {
+                        pubDate = 'n.d.';
+                    }
+                }
+
+                // Extract site name (if available)
+                let siteName = 'Unknown Site';
+                const metaSiteName = doc.querySelector('meta[property="og:site_name"]');
+                if (metaSiteName) {
+                    siteName = metaSiteName.getAttribute('content');
+                }
+
+                // Generate APA 6 reference
+                const apaReference = `${siteName}. (${pubDate}). ${title}. Retrieved from ${url}`;
+                document.getElementById('result').innerText = `APA 6 Reference: ${apaReference}`;
+            } catch (error) {
+                document.getElementById('result').innerText = `Error retrieving the webpage: ${error}`;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>APA 6 Reference Generator</h1>
+    <label for="urlInput">Enter the URL:</label>
+    <input type="text" id="urlInput" placeholder="https://example.com">
+    <button onclick="generateAPAReference()">Generate Reference</button>
+    <p id="result"></p>
+</body>
+</html>
