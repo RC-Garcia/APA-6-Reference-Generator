@@ -8,7 +8,7 @@ The HTML file `index.html` contains a simple web page that allows users to input
 
 ### How to Use
 1. Ensure you have an internet connection.
-2. Open the `index.html` file in a web browser.
+2. Open the [`index.html`](index.html) file in a web browser.
 3. Enter the URL of the webpage for which you want to generate an APA 6 reference in the input field.
 4. Click the "Generate Reference" button.
 5. The generated APA 6 reference will be displayed below the button.
